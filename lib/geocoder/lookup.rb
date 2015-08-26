@@ -57,7 +57,8 @@ module Geocoder
         :maxmind_local,
         :telize,
         :pointpin,
-        :maxmind_geoip2
+        :maxmind_geoip2,
+        :ip_geo_base
       ]
     end
 

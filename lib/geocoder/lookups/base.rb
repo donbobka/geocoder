@@ -230,13 +230,8 @@ module Geocoder
           # apply the charset from the Content-Type header, if possible
           ct = response['content-type']
 
-          if ct && ct['charset']
-            charset = ct.split(';').select do |s|
-              s['charset']
-            end.first.to_s.split('=')
-            if charset.length == 2
-              body.force_encoding(charset.last) rescue ArgumentError
-            end
+          if c = response_charset(response)
+            body.force_encoding(c).encode!('UTF-8') rescue ArgumentError
           end
 
           if cache and valid_response?(response)
@@ -245,6 +240,17 @@ module Geocoder
           @cache_hit = false
         end
         body
+      end
+
+      def response_charset(response)
+        ct = response['content-type']
+        if ct && ct['charset']
+          charset = ct.split(';').select do |s|
+            s['charset']
+          end.first.to_s.split('=')
+          return charset.last if charset.length == 2
+        end
+        nil
       end
 
       def check_response_for_errors!(response)

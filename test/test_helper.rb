@@ -181,6 +181,27 @@ module Geocoder
       end
     end
 
+    class IpGeoBase
+      private
+
+      def read_fixture(file)
+        filepath = File.join("test", "fixtures", file)
+        s = File.read(filepath, mode: 'r:cp1251').strip.gsub(/\n\s*/, "")
+        MockHttpResponse.new(body: s, code: "200")
+      end
+
+      def default_fixture_filename
+        'ip_geo_base_78_31_96_61'
+      end
+
+      def results_with_mock(query)
+        return [] if query.to_s == 'no results'
+        results_without_mock(query)
+      end
+      alias_method :results_without_mock, :results
+      alias_method :results, :results_with_mock
+    end
+
     class Geoip2
       private
 
